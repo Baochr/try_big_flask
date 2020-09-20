@@ -15,8 +15,16 @@ def login():
         if user and user.verify_password(form.password.data):
             login_user(user, form.remember_me.data)
             next = request.args.get('next')
-            if next and next.startswitch('/'):
+            if next is None or next.startswitch('/'):
                 next = url_for('main.index')
             return redirect(next)
         flash('Invaild username or password.')
     return render_template('auth/login.html', form=form)
+
+
+@auth.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out.')
+    return redirect(url_for('main.index'))
